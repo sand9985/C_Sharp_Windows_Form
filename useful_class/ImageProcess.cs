@@ -89,6 +89,35 @@ using System.Drawing;
         }
 
 
+        //生成透明貼圖
+        public static void generate_alpha_bitmap(ref Bitmap img)
+        {
+            Brush white_brush = new SolidBrush(Color.White);
+            Brush gray_brush = new SolidBrush(Color.FromArgb(255, 191, 191, 191));
+            Graphics g = Graphics.FromImage(img);
+
+            int first_color_type = 1; //1 :white -1 gray
+            int type;
+            for (int i = 0; i < img.Width; i += 8)
+            {
+                if (first_color_type == 1)
+                    type = 1;
+                else
+                    type = -1;
+
+                for (int j = 0; j < img.Height; j += 8)
+                {
+                    if (type == 1)
+                        g.FillRectangle(white_brush, i, j, 8, 8);
+                    else
+                        g.FillRectangle(gray_brush, i, j, 8, 8);
+
+                    type = -type;
+                }
+                first_color_type = -first_color_type;
+            }
+
+        }
             
 
     }
