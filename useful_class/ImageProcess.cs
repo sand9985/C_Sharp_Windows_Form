@@ -118,7 +118,57 @@ using System.Drawing;
             }
 
         }
-            
+
+
+
+        public static void adjust_tone(ref Bitmap img,int tone_r,int tone_g,int tone_b,int tone_gray)
+        {
+            fast_bitmap.img = img;
+            fast_bitmap.LockImage();
+
+
+            for (int i = 0; i < fast_bitmap.img.Width; i++)
+            {
+                for (int j = 0; j < fast_bitmap.img.Height; j++)
+                {
+                    //0.299, 0.587, 0.114 混色比例
+                    Color c = fast_bitmap.GetPixel(i, j); //取得像素
+                    double gray = c.R * 0.299 + c.G * 0.587 + c.B * 0.114;
+                   
+                    gray /= 255.0;
+                    double percent = (tone_gray/255.0)- 1.0;
+
+                    double r = gray + (gray - (c.R / 255.0)) * percent;
+                    double g = gray + (gray - (c.G / 255.0)) * percent;
+                    double b = gray + (gray - (c.B / 255.0)) * percent;
+
+                    r += (tone_r / 255.0);
+                    g += (tone_g / 255.0);
+                    b += (tone_b / 255.0);
+                   
+                    int r2=(int)Math.Round(r * 255.0);
+                    int g2 = (int)Math.Round(g * 255.0);
+                    int b2 = (int)Math.Round(b * 255.0);
+                     
+                    
+                    
+
+                    r2 = Math.Max(0, r2); r2 = Math.Min(255, r2);
+                    g2 = Math.Max(0, g2); g2 = Math.Min(255, g2);
+                    b2 = Math.Max(0, b2); b2 = Math.Min(255, b2);
+
+                    fast_bitmap.SetPixel(i, j, Color.FromArgb(c.A, r2, g2, b2));
+
+                }
+
+            }
+
+
+
+
+            fast_bitmap.UnlockImage();
+
+        }
 
     }
 
